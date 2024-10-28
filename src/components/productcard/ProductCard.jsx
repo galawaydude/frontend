@@ -26,11 +26,13 @@ const ProductCard = ({ product }) => {
       }
 
       if (!response.ok) {
+        const errorData = await response.text();
+        console.error('Server response:', errorData);
         throw new Error('Failed to add product to cart');
       }
 
       const data = await response.json();
-      console.log('Product added to cart:', data);
+      console.log('Cart response:', data);
       setMessage('Added to cart');
       setButtonVisible(false);
 
