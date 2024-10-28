@@ -8,17 +8,22 @@ const ProductCard = ({ product }) => {
 
   const handleAddToCart = async () => {
     try {
-      const response = await fetch('https://demotestmern.azurewebsites.net/api/cart', {
+      const response = await fetch('https://demotestmern.azurewebsites.net/api/users/cart', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include', // Include credentials for cookie
+        credentials: 'include',
         body: JSON.stringify({
-          productId: product._id, // Ensure your product has an _id field
-          quantity: 1, // You can modify this to allow user to choose quantity
+          productId: product._id,
+          quantity: 1,
         }),
       });
+
+      if (response.status === 401) {
+        window.location.href = '/login';
+        return;
+      }
 
       if (!response.ok) {
         throw new Error('Failed to add product to cart');
@@ -29,13 +34,13 @@ const ProductCard = ({ product }) => {
       setMessage('Added to cart');
       setButtonVisible(false);
 
-      // Reset message and show button after 6 seconds
       setTimeout(() => {
         setMessage('');
         setButtonVisible(true);
       }, 6000);
     } catch (error) {
       console.error('Error adding product to cart:', error);
+      setMessage('Failed to add to cart');
     }
   };
 
