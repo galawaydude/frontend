@@ -12,7 +12,7 @@ const Cart = () => {
     useEffect(() => {
         const fetchCart = async () => {
             try {
-                const response = await fetch('https://demotestmern.azurewebsites.net/api/users/user/cart', {   
+                const response = await fetch('https://demotestmern.azurewebsites.net/api/users/cart', {   
                     credentials: 'include',
                 });
     
@@ -26,8 +26,9 @@ const Cart = () => {
                 }
 
                 const data = await response.json();
-                // Check if data and cartItems exist
-                if (data && Array.isArray(data.cartItems)) {
+                console.log('Cart data:', data);
+
+                if (data && data.cartItems) {
                     setCartItems(data.cartItems);
                     const initialSelectedItems = {};
                     data.cartItems.forEach(item => {
