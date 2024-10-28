@@ -1,0 +1,59 @@
+.dashboard-container {
+    padding: 20px;
+    text-align: center;
+    background-color: #f9f9f9; /* Light background for better contrast */
+  }
+  
+  h1 {
+    margin-bottom: 20px;
+    color: #333; /* Darker text for better readability */
+  }
+  
+  .dashboard-group {
+    margin-bottom: 40px; /* Space between groups */
+    padding: 10px;
+    border: 1px solid #e0e0e0; /* Light border around each group */
+    border-radius: 8px;
+    background-color: #fff; /* White background for groups */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+  }
+  
+  h2 {
+    margin-bottom: 15px; /* Space below section titles */
+    /* color: #007bff;  */
+  }
+  
+  .dashboard-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid layout */
+    gap: 20px; /* Space between buttons */
+  }
+  
+  .button-card {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 20px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  }
+  
+  .button-card:hover {
+    transform: translateY(-3px); /* Lift effect on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+  }
+  
+  .button-card h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: normal; /* Normal weight for button text */
+    color: #fff; /* White text for button */
+  }
+  
