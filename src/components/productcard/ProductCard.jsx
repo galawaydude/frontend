@@ -8,7 +8,7 @@ const ProductCard = ({ product }) => {
 
   const handleAddToCart = async () => {
     try {
-      const response = await fetch('https://demotestmern.azurewebsites.net/api/users/cart', {
+      const response = await fetch('https://demotestmern.azurewebsites.net/api/cart', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -12,7 +12,7 @@ const Cart = () => {
     useEffect(() => {
         const fetchCart = async () => {
             try {
-                const response = await fetch('https://demotestmern.azurewebsites.net/api/users/cart', {   
+                const response = await fetch('https://demotestmern.azurewebsites.net/api/cart', {   
                     credentials: 'include',
                 });
     
