@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const Cart = () => {
     const [cartItems, setCartItems] = useState([]);
     const [selectedItems, setSelectedItems] = useState({});
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -15,25 +16,38 @@ const Cart = () => {
                     credentials: 'include',
                 });
     
-                if (response.ok) {
-                    const data = await response.json();
+                if (response.status === 401) {
+                    navigate('/login');
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch cart');
+                }
+
+                const data = await response.json();
+                // Check if data and cartItems exist
+                if (data && Array.isArray(data.cartItems)) {
                     setCartItems(data.cartItems);
                     const initialSelectedItems = {};
                     data.cartItems.forEach(item => {
-                        initialSelectedItems[item.product._id] = true; 
+                        if (item && item.product && item.product._id) {
+                            initialSelectedItems[item.product._id] = true;
+                        }
                     });
                     setSelectedItems(initialSelectedItems);
                 } else {
-                    const errorData = await response.json();
-                    console.error('Failed to fetch cart:', errorData);
+                    setCartItems([]);
+                    setSelectedItems({});
                 }
             } catch (error) {
                 console.error('Error fetching cart:', error);
+                setError('Unable to load cart items. Please try again later.');
             }
         };
     
         fetchCart();
-    }, []);
+    }, [navigate]);
 
     const updateQuantity = async (productId, newQuantity) => {
         if (newQuantity < 1) return;
@@ -97,46 +111,52 @@ const Cart = () => {
     return (
         <div className="cart">
             <div className="container">
-                <div className="home-pro-head">
-                    <div className="section_left_title">Shopping Cart</div>
-                    <div className="items-count">{cartItems.length} items in your bag.</div>
-                </div>
-                <div className="cart-product-summary">
-                    <div className="cart-products-con">
-                        <div className="cart-header">
-                            <span>Product</span>
-                            <span>Price</span>
-                            <span>Quantity</span>
-                            <span>Total Price</span>
+                {error ? (
+                    <div className="error-message">{error}</div>
+                ) : (
+                    <>
+                        <div className="home-pro-head">
+                            <div className="section_left_title">Shopping Cart</div>
+                            <div className="items-count">{cartItems?.length || 0} items in your bag.</div>
                         </div>
-                        {cartItems.map((item) => (
-                            <div key={item.product._id} className="cart-item-container">
-                                <input
-                                    type="checkbox"
-                                    className="cart-item-checkbox"
-                                    checked={!!selectedItems[item.product._id]}
-                                    onChange={() => handleCheckboxChange(item.product._id)}
-                                />
-                                <CartProductCard 
-                                    product={item.product} 
-                                    quantity={item.quantity}
-                                    onUpdateQuantity={updateQuantity}
-                                    onRemoveFromCart={removeFromCart}
-                                />
+                        <div className="cart-product-summary">
+                            <div className="cart-products-con">
+                                <div className="cart-header">
+                                    <span>Product</span>
+                                    <span>Price</span>
+                                    <span>Quantity</span>
+                                    <span>Total Price</span>
+                                </div>
+                                {cartItems.map((item) => (
+                                    <div key={item.product._id} className="cart-item-container">
+                                        <input
+                                            type="checkbox"
+                                            className="cart-item-checkbox"
+                                            checked={!!selectedItems[item.product._id]}
+                                            onChange={() => handleCheckboxChange(item.product._id)}
+                                        />
+                                        <CartProductCard 
+                                            product={item.product} 
+                                            quantity={item.quantity}
+                                            onUpdateQuantity={updateQuantity}
+                                            onRemoveFromCart={removeFromCart}
+                                        />
+                                    </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
-                    <div className="cart-summary-con">
-                        <h3>Cart Total</h3>
-                        <div className="total-con">
-                            {/* <span>Total</span> */}
-                            <span className='cart-price'>${calculateSubtotal().toFixed(2)}</span>
+                            <div className="cart-summary-con">
+                                <h3>Cart Total</h3>
+                                <div className="total-con">
+                                    {/* <span>Total</span> */}
+                                    <span className='cart-price'>${calculateSubtotal().toFixed(2)}</span>
+                                </div>
+                                <button className="checkout-button" onClick={handleCheckout}>
+                                    Checkout
+                                </button>
+                            </div>
                         </div>
-                        <button className="checkout-button" onClick={handleCheckout}>
-                            Checkout
-                        </button>
-                    </div>
-                </div>
+                    </>
+                )}
             </div>
         </div>
     );
